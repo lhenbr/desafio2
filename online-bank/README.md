@@ -16,3 +16,7 @@ O build da aplicação é realizado com o seguinte comando:
 mvnw clean package
 ```
 
+## Descrição dos endpoints
+
+
+## Descrição dos endpoints

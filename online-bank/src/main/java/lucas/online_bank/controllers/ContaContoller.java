@@ -44,10 +44,7 @@ public class ContaContoller {
     @ApiResponse(responseCode = "200")
     public ResponseEntity<Object>MostrarSaldo(@PathVariable final Long idConta) {
         ContaDTO conta = (contaService.get(idConta));
-        if (conta.getFlagAtivo() == false){
-            return new ResponseEntity<>("A conta não esta ativa",HttpStatus.UNAUTHORIZED);
-        }
-        return ResponseEntity.ok(conta.getSaldo());
+        return conta.getFlagAtivo()  ? ResponseEntity.ok(conta.getSaldo()) : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("A conta esta Bloqueada");
     }
     @PutMapping("/bloquear/{idConta}")
     @ApiResponse(responseCode = "200")

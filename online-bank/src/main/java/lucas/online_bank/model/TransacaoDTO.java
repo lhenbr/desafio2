@@ -23,7 +23,7 @@ public class TransacaoDTO {
     @Digits(integer = 10, fraction = 2)
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @Schema(type = "string", example = "51.08")
-    @Min(0)
+
     private BigDecimal valor;
 
     @NotNull

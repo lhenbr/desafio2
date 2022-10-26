@@ -3,6 +3,7 @@ package lucas.online_bank.domain;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 
 import lombok.Getter;
 import lombok.Setter;

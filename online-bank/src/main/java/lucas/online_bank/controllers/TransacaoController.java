@@ -29,27 +29,23 @@ public class TransacaoController {
         this.transacaoService = transacaoService;
         this.contaService = contaService;
     }
-    @PostMapping("/depositar")
-    public ResponseEntity<Long> depositar(@RequestBody @Valid TransacaoDTO transacaoDTO){
-        //Validar conta(Bloqueda ou inativa)
+    @PostMapping("/realizarTransacao")
+    public ResponseEntity<Object> realizarTransacao(@RequestBody @Valid TransacaoDTO transacaoDTO){
         ContaDTO conta = contaService.get(transacaoDTO.getConta());
-        BigDecimal novoSaldo = conta.getSaldo().add(transacaoDTO.getValor());
-        conta.setSaldo(novoSaldo);
-        contaService.update(conta.getIdConta(),conta);
-        return new ResponseEntity<>(transacaoService.create(transacaoDTO), HttpStatus.CREATED);
-    }
-    @PostMapping("/sacar")
-    public ResponseEntity<Long> sacar(@RequestBody @Valid TransacaoDTO transacaoDTO){
-        //Validar conta(Bloqueda ou inativa)
-        ContaDTO conta = contaService.get(transacaoDTO.getConta());
+        if(!conta.getFlagAtivo()){
+            return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("A conta esta Bloqueada");
+        }
+        if(transacaoDTO.getValor().compareTo(BigDecimal.ZERO) < 0 && conta.getSaldo().compareTo(transacaoDTO.getValor().abs()) < 0){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("A conta não possui saldo para está transação");
+        }
         BigDecimal novoSaldo = conta.getSaldo().add(transacaoDTO.getValor());
         conta.setSaldo(novoSaldo);
         contaService.update(conta.getIdConta(),conta);
         return new ResponseEntity<>(transacaoService.create(transacaoDTO), HttpStatus.CREATED);
     }
     @GetMapping("/extrato/{idConta}")
-    //validar conta
-    public ResponseEntity<List<TransacaoDTO>> MostraExtratoEntreDatas(@PathVariable final Long idConta, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd")  LocalDate dataInicial, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd")  LocalDate dataFinal){
-        return ResponseEntity.ok(transacaoService.BuscaExtrato(idConta,dataInicial,dataFinal));
+    public ResponseEntity<Object> MostraExtratoEntreDatas(@PathVariable final Long idConta, @RequestParam(required = false,defaultValue = "+999999999-12-31") @DateTimeFormat(pattern = "yyyy-MM-dd")  LocalDate dataInicial, @RequestParam(required = false,defaultValue = "-999999999-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd")  LocalDate dataFinal){
+        ContaDTO conta = contaService.get(idConta);
+        return conta.getFlagAtivo()  ?  ResponseEntity.ok(transacaoService.BuscaExtrato(idConta,dataInicial,dataFinal)) : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("A conta esta Bloqueada");
     }
 }
