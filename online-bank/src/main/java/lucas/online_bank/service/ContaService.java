@@ -5,16 +5,17 @@ import java.util.stream.Collectors;
 import lucas.online_bank.domain.Conta;
 import lucas.online_bank.domain.Pessoa;
 import lucas.online_bank.model.ContaDTO;
-import lucas.online_bank.model.PessoaDTO;
 import lucas.online_bank.repos.ContaRepository;
 import lucas.online_bank.repos.PessoaRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-
+/**
+ * Classe que encapsula parte da logica de négocio relacionada as contas
+ * @author Lucas Martins
+ */
 @Service
 public class ContaService {
 
@@ -27,36 +28,50 @@ public class ContaService {
         this.pessoaRepository = pessoaRepository;
     }
 
-    public List<ContaDTO> findAll() {
+    /**
+     * Busca todas as contas cadastradas
+     * @return List<ContaDTO>, lista com todas as contas cadastradas no sistema
+     */
+    public List<ContaDTO> buscaTodos() {
         return contaRepository.findAll(Sort.by("idConta"))
                 .stream()
                 .map(conta -> mapToDTO(conta, new ContaDTO()))
                 .collect(Collectors.toList());
     }
 
-    public ContaDTO get(final Long idConta) {
+    /**
+     * Busca uma conta com o id passado e retorna o seu DTO
+     * @param idConta
+     * @return ContaDTO, o DTO da conta buscada
+     */
+    public ContaDTO busca(final Long idConta) {
         return contaRepository.findById(idConta)
                 .map(conta -> mapToDTO(conta, new ContaDTO()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    public Long create(final ContaDTO contaDTO) {
+    /**
+     * Cria uma conta de acordo com as informaçoes passadas via DTO
+     * @param contaDTO
+     * @return long, id da conta criada
+     */
+    public Long cria(final ContaDTO contaDTO) {
         final Conta conta = new Conta();
         mapToEntity(contaDTO, conta);
         return contaRepository.save(conta).getIdConta();
     }
 
-    public void update(final Long idConta, final ContaDTO contaDTO) {
+    /**
+     * modifica uma conta com o id fornecido de acordo com os dados fornecidos na contaDTO
+     * @param idConta
+     * @param contaDTO
+     */
+    public void modifica(final Long idConta, final ContaDTO contaDTO) {
         final Conta conta = contaRepository.findById(idConta)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         mapToEntity(contaDTO, conta);
         contaRepository.save(conta);
     }
-
-    public void delete(final Long idConta) {
-        contaRepository.deleteById(idConta);
-    }
-
     private ContaDTO mapToDTO(final Conta conta, final ContaDTO contaDTO) {
         contaDTO.setIdConta(conta.getIdConta());
         contaDTO.setSaldo(conta.getSaldo());

@@ -30,24 +30,24 @@ public class PessoaController {
 
     @GetMapping("/consultarTodas")
     public ResponseEntity<List<PessoaDTO>> getAllPessoas() {
-        return ResponseEntity.ok(pessoaService.findAll());
+        return ResponseEntity.ok(pessoaService.buscaTodos());
     }
 
     @GetMapping("/consultar/{idPessoa}")
     public ResponseEntity<PessoaDTO> getPessoa(@PathVariable final Long idPessoa) {
-        return ResponseEntity.ok(pessoaService.get(idPessoa));
+        return ResponseEntity.ok(pessoaService.busca(idPessoa));
     }
 
     @PostMapping("/criar")
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createPessoa(@RequestBody @Valid final PessoaDTO pessoaDTO) {
-        return new ResponseEntity<>(pessoaService.create(pessoaDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(pessoaService.criar(pessoaDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/atualizar/{idPessoa}")
     public ResponseEntity<Void> updatePessoa(@PathVariable final Long idPessoa,
             @RequestBody @Valid final PessoaDTO pessoaDTO) {
-        pessoaService.update(idPessoa, pessoaDTO);
+        pessoaService.modifica(idPessoa, pessoaDTO);
         return ResponseEntity.ok().build();
     }
 

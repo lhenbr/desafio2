@@ -1,10 +1,7 @@
 package lucas.online_bank.controllers;
 
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import javax.validation.Valid;
 
 import lucas.online_bank.model.ContaDTO;
@@ -31,7 +28,7 @@ public class TransacaoController {
     }
     @PostMapping("/realizarTransacao")
     public ResponseEntity<Object> realizarTransacao(@RequestBody @Valid TransacaoDTO transacaoDTO){
-        ContaDTO conta = contaService.get(transacaoDTO.getConta());
+        ContaDTO conta = contaService.busca(transacaoDTO.getConta());
         if(!conta.getFlagAtivo()){
             return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("A conta esta Bloqueada");
         }
@@ -40,12 +37,12 @@ public class TransacaoController {
         }
         BigDecimal novoSaldo = conta.getSaldo().add(transacaoDTO.getValor());
         conta.setSaldo(novoSaldo);
-        contaService.update(conta.getIdConta(),conta);
-        return new ResponseEntity<>(transacaoService.create(transacaoDTO), HttpStatus.CREATED);
+        contaService.modifica(conta.getIdConta(),conta);
+        return new ResponseEntity<>(transacaoService.cria(transacaoDTO), HttpStatus.CREATED);
     }
     @GetMapping("/extrato/{idConta}")
     public ResponseEntity<Object> MostraExtratoEntreDatas(@PathVariable final Long idConta, @RequestParam(required = false,defaultValue = "+999999999-12-31") @DateTimeFormat(pattern = "yyyy-MM-dd")  LocalDate dataInicial, @RequestParam(required = false,defaultValue = "-999999999-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd")  LocalDate dataFinal){
-        ContaDTO conta = contaService.get(idConta);
-        return conta.getFlagAtivo()  ?  ResponseEntity.ok(transacaoService.BuscaExtrato(idConta,dataInicial,dataFinal)) : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("A conta esta Bloqueada");
+        ContaDTO conta = contaService.busca(idConta);
+        return conta.getFlagAtivo()  ?  ResponseEntity.ok(transacaoService.BuscaTransacoes(idConta,dataInicial,dataFinal)) : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("A conta esta Bloqueada");
     }
 }

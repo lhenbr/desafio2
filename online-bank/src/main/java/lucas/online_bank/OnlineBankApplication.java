@@ -28,7 +28,7 @@ public class OnlineBankApplication {
             Pessoa pessoa =Pessoa.builder()
                     .cpf("11111111111")
                     .nome("Lucas")
-                    .dataNascimento(LocalDate.now())
+                    .dataNascimento(LocalDate.of(1993,8,30))
                     .build();
             Conta conta = Conta.builder()
                     .pessoa(pessoa)

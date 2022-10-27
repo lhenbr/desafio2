@@ -10,7 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-
+/**
+ * Classe que encapsula parte da logica de négocio relacionada as pessoas
+ * @author Lucas Martins
+ */
 @Service
 public class PessoaService {
 
@@ -20,32 +23,55 @@ public class PessoaService {
         this.pessoaRepository = pessoaRepository;
     }
 
-    public List<PessoaDTO> findAll() {
+    /**
+     * funçãoq que busca todas as pessoas cadastradas no sistema
+     * @return List<PessoaDTO>, uma lista com todas as pessoas cadastradas no sistema
+     */
+    public List<PessoaDTO> buscaTodos() {
         return pessoaRepository.findAll(Sort.by("idPessoa"))
                 .stream()
                 .map(pessoa -> mapToDTO(pessoa, new PessoaDTO()))
                 .collect(Collectors.toList());
     }
 
-    public PessoaDTO get(final Long idPessoa) {
+    /**
+     * Busca uma pessoa com o id passado
+     * @param idPessoa
+     * @return PessoaDTO, pessoa com o id pesquisado
+     */
+    public PessoaDTO busca(final Long idPessoa) {
         return pessoaRepository.findById(idPessoa)
                 .map(pessoa -> mapToDTO(pessoa, new PessoaDTO()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    public Long create(final PessoaDTO pessoaDTO) {
+    /**
+     * cria uma pessoa e a salva no repositotio de acordo com a pessoaDTO passada
+     * @param pessoaDTO
+     * @return
+     */
+    public Long criar(final PessoaDTO pessoaDTO) {
         final Pessoa pessoa = new Pessoa();
         mapToEntity(pessoaDTO, pessoa);
         return pessoaRepository.save(pessoa).getIdPessoa();
     }
 
-    public void update(final Long idPessoa, final PessoaDTO pessoaDTO) {
+    /**
+     * Modifica uma pessoa com o id passado de acordo com as informaçoes fornecidas no DTO
+     * @param idPessoa
+     * @param pessoaDTO
+     */
+    public void modifica(final Long idPessoa, final PessoaDTO pessoaDTO) {
         final Pessoa pessoa = pessoaRepository.findById(idPessoa)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         mapToEntity(pessoaDTO, pessoa);
         pessoaRepository.save(pessoa);
     }
 
+    /**
+     * deleta a pessoa com o id informado
+     * @param idPessoa
+     */
     public void delete(final Long idPessoa) {
         pessoaRepository.deleteById(idPessoa);
     }
@@ -64,9 +90,4 @@ public class PessoaService {
         pessoa.setDataNascimento(pessoaDTO.getDataNascimento());
         return pessoa;
     }
-
-    public boolean cpfExists(final String cpf) {
-        return pessoaRepository.existsByCpfIgnoreCase(cpf);
-    }
-
 }

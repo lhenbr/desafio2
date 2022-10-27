@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lucas.online_bank.domain.Conta;
 import lucas.online_bank.domain.Transacao;
-import lucas.online_bank.model.ContaDTO;
 import lucas.online_bank.model.TransacaoDTO;
 import lucas.online_bank.repos.ContaRepository;
 import lucas.online_bank.repos.TransacaoRepository;
@@ -15,10 +14,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-
+/**
+ * Classe que encapsula parte da logica de négocio relacionada as transaçoes
+ * @author Lucas Martins
+ */
 @Service
 public class TransacaoService {
-
     private final TransacaoRepository transacaoRepository;
     private final ContaRepository contaRepository;
     private final ContaService contaService;
@@ -29,35 +30,15 @@ public class TransacaoService {
         this.contaService = contaService;
         this.contaRepository = contaRepository;
     }
-
-    public List<TransacaoDTO> findAll() {
-        return transacaoRepository.findAll(Sort.by("idTransacao"))
-                .stream()
-                .map(transacao -> mapToDTO(transacao, new TransacaoDTO()))
-                .collect(Collectors.toList());
-    }
-
-    public TransacaoDTO get(final Long idTransacao) {
-        return transacaoRepository.findById(idTransacao)
-                .map(transacao -> mapToDTO(transacao, new TransacaoDTO()))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    }
-
-    public Long create(final TransacaoDTO transacaoDTO) {
+    /**
+     * cria uma transação com base no transaçaoDTO recebida
+     * @param transacaoDTO
+     * @return Long, id da transação criada
+     */
+    public Long cria(final TransacaoDTO transacaoDTO) {
         final Transacao transacao = new Transacao();
         mapToEntity(transacaoDTO, transacao);
         return transacaoRepository.save(transacao).getIdTransacao();
-    }
-
-    public void update(final Long idTransacao, final TransacaoDTO transacaoDTO) {
-        final Transacao transacao = transacaoRepository.findById(idTransacao)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        mapToEntity(transacaoDTO, transacao);
-        transacaoRepository.save(transacao);
-    }
-
-    public void delete(final Long idTransacao) {
-        transacaoRepository.deleteById(idTransacao);
     }
 
     private TransacaoDTO mapToDTO(final Transacao transacao, final TransacaoDTO transacaoDTO) {
@@ -76,7 +57,15 @@ public class TransacaoService {
         transacao.setConta(conta);
         return transacao;
     }
-    public List<TransacaoDTO> BuscaExtrato(Long idConta, LocalDate dataInicial, LocalDate dataFinal){
+
+    /**
+     * Função que busca todas as transaçoes feitas em uma conta em um determindado periodo/
+     * @param idConta
+     * @param dataInicial
+     * @param dataFinal
+     * @return List<TransacaoDTO>
+     */
+    public List<TransacaoDTO> BuscaTransacoes(Long idConta, LocalDate dataInicial, LocalDate dataFinal){
         Optional<Conta> conta = contaRepository.findById(idConta);
         return transacaoRepository.findByContaAndDataTransacaoGreaterThanEqualAndDataTransacaoLessThanEqual(conta.get(),dataInicial,dataFinal)
                 .stream()
