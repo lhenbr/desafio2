@@ -50,7 +50,7 @@ public class PessoaService {
      * @param pessoaDTO
      * @return
      */
-    public Long criar(final PessoaDTO pessoaDTO) {
+    public Long cria(final PessoaDTO pessoaDTO) {
         final Pessoa pessoa = new Pessoa();
         mapToEntity(pessoaDTO, pessoa);
         return pessoaRepository.save(pessoa).getIdPessoa();
@@ -72,7 +72,7 @@ public class PessoaService {
      * deleta a pessoa com o id informado
      * @param idPessoa
      */
-    public void delete(final Long idPessoa) {
+    public void exclui(final Long idPessoa) {
         pessoaRepository.deleteById(idPessoa);
     }
 

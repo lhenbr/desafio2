@@ -41,6 +41,21 @@ public class TransacaoService {
         return transacaoRepository.save(transacao).getIdTransacao();
     }
 
+    /**
+     * Função que busca todas as transaçoes feitas em uma conta em um determindado periodo/
+     * @param idConta
+     * @param dataInicial
+     * @param dataFinal
+     * @return List<TransacaoDTO>
+     */
+    public List<TransacaoDTO> BuscaTransacoes(Long idConta, LocalDate dataInicial, LocalDate dataFinal){
+        Optional<Conta> conta = contaRepository.findById(idConta);
+        return transacaoRepository.findByContaAndDataTransacaoGreaterThanEqualAndDataTransacaoLessThanEqual(conta.get(),dataInicial,dataFinal)
+                .stream()
+                .map(transacao -> mapToDTO(transacao, new TransacaoDTO()))
+                .collect(Collectors.toList());
+    }
+
     private TransacaoDTO mapToDTO(final Transacao transacao, final TransacaoDTO transacaoDTO) {
         transacaoDTO.setIdTransacao(transacao.getIdTransacao());
         transacaoDTO.setValor(transacao.getValor());
@@ -56,21 +71,6 @@ public class TransacaoService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "conta not found"));
         transacao.setConta(conta);
         return transacao;
-    }
-
-    /**
-     * Função que busca todas as transaçoes feitas em uma conta em um determindado periodo/
-     * @param idConta
-     * @param dataInicial
-     * @param dataFinal
-     * @return List<TransacaoDTO>
-     */
-    public List<TransacaoDTO> BuscaTransacoes(Long idConta, LocalDate dataInicial, LocalDate dataFinal){
-        Optional<Conta> conta = contaRepository.findById(idConta);
-        return transacaoRepository.findByContaAndDataTransacaoGreaterThanEqualAndDataTransacaoLessThanEqual(conta.get(),dataInicial,dataFinal)
-                .stream()
-                .map(transacao -> mapToDTO(transacao, new TransacaoDTO()))
-                .collect(Collectors.toList());
     }
 
 }

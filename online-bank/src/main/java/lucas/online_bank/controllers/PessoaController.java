@@ -41,7 +41,7 @@ public class PessoaController {
     @PostMapping("/criar")
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createPessoa(@RequestBody @Valid final PessoaDTO pessoaDTO) {
-        return new ResponseEntity<>(pessoaService.criar(pessoaDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(pessoaService.cria(pessoaDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/atualizar/{idPessoa}")
@@ -54,7 +54,7 @@ public class PessoaController {
     @DeleteMapping("/deletar/{idPessoa}")
     @ApiResponse(responseCode = "204")
     public ResponseEntity<Void> deletePessoa(@PathVariable final Long idPessoa) {
-        pessoaService.delete(idPessoa);
+        pessoaService.exclui(idPessoa);
         return ResponseEntity.noContent().build();
     }
 

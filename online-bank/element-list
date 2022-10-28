@@ -1,0 +1,10 @@
+lucas.online_bank
+lucas.online_bank.config
+lucas.online_bank.controllers
+lucas.online_bank.domain
+lucas.online_bank.model
+lucas.online_bank.repos
+lucas.online_bank.service
+lucas.online_bank.testes
+lucas.online_bank.testes.controllers
+lucas.online_bank.testes.services
