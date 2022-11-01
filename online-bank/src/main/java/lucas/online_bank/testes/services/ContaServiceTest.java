@@ -13,8 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ContaServiceTest {
     @Autowired
     ContaService contaService;
-
-    @DisplayName("Teste ContaService")
     @Test
     public void contextLoads() {
         Assertions.assertNotNull(contaService);

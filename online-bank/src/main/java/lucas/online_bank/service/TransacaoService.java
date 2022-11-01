@@ -46,7 +46,7 @@ public class TransacaoService {
      * @param idConta
      * @param dataInicial
      * @param dataFinal
-     * @return List<TransacaoDTO>
+     * @return List:TransacaoDTO
      */
     public List<TransacaoDTO> BuscaTransacoes(Long idConta, LocalDate dataInicial, LocalDate dataFinal){
         Optional<Conta> conta = contaRepository.findById(idConta);

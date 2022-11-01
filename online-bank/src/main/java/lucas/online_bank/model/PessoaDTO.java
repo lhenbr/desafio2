@@ -18,7 +18,7 @@ public class PessoaDTO {
     private String nome;
 
     @NotNull
-    @Size(max = 255)
+    @Size(max = 11, min = 11)
     private String cpf;
 
     @NotNull

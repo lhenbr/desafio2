@@ -15,7 +15,6 @@ public class PessoaServiceTest {
     @Autowired
     PessoaService pessoaService;
 
-    @DisplayName("Teste PessoaService")
     @Test
     public void contextLoads() {
         Assertions.assertNotNull(pessoaService);

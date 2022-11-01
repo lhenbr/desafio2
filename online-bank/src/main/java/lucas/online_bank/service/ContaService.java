@@ -30,7 +30,7 @@ public class ContaService {
 
     /**
      * Busca todas as contas cadastradas
-     * @return List<ContaDTO>, lista com todas as contas cadastradas no sistema
+     * @return List:ContaDTO, lista com todas as contas cadastradas no sistema
      */
     public List<ContaDTO> buscaTodos() {
         return contaRepository.findAll(Sort.by("idConta"))

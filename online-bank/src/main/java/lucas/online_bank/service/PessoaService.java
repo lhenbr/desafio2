@@ -25,7 +25,7 @@ public class PessoaService {
 
     /**
      * funçãoq que busca todas as pessoas cadastradas no sistema
-     * @return List<PessoaDTO>, uma lista com todas as pessoas cadastradas no sistema
+     * @return List:PessoaDTO, uma lista com todas as pessoas cadastradas no sistema
      */
     public List<PessoaDTO> buscaTodos() {
         return pessoaRepository.findAll(Sort.by("idPessoa"))

@@ -19,8 +19,6 @@ TransacaoService transacaoService;
     TransacaoDTO transaçaoDTO = new TransacaoDTO();
 
 
-    @DisplayName("Teste TransacaoService")
-
     @Test
     public void contextLoads() {
         Assertions.assertNotNull(transacaoService);
